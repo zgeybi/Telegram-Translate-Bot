@@ -3,9 +3,10 @@ from telegram import Update
 import dialogue
 import API
 
+DEFAULT_LANG_CHOICE = 0
+
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    dialogue.TO_LANGUAGE[update.effective_user.id] = 'en'
     await context.bot.send_message(chat_id=update.effective_chat.id, text="""Hey! Welcome to Yandex Translate bot!
 Here you can translate text from any language to a language of your choice!
 You don't need to specify source language, Yandex API will identify the language on its own :)
@@ -15,12 +16,11 @@ Use /help to get more help!""")
 
 async def translate(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id not in dialogue.TO_LANGUAGE.keys():
-
         await update.message.reply_text(text=
-                                        f"{API.translate(dialogue.TO_LANGUAGE[0], update.message.text)}")
+                                        API.translate(dialogue.TO_LANGUAGE[DEFAULT_LANG_CHOICE], update.message.text))
     else:
         await update.message.reply_text(text=
-                                        f"{API.translate(dialogue.TO_LANGUAGE[update.effective_user.id], update.message.text)}")
+                                        API.translate(dialogue.TO_LANGUAGE[update.effective_user.id], update.message.text))
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
